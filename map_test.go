@@ -23,42 +23,115 @@ Move unit
 
 func TestInitializeMap(t *testing.T) {
 
-	// var testCases = []struct {
-	// 	name  string
-	// 	sizeX int
-	// 	sizeY int
-	// }{
-	// 	{"Name1", 5, 6},
-	// 	{"Name2", 222, 665},
-	// 	{"Name3", 10, 2},
+	var testCases = []struct {
+		name  string
+		sizeX int
+		sizeY int
+	}{
+		{"EmptyMap", 5, 6},
+	}
+
+	for _, m := range testCases {
+		newMap := NewMap(m.name, m.sizeX, m.sizeY)
+
+		if len(newMap.Spaces) != m.sizeX {
+			t.Error("Map does not have expected X side")
+		}
+
+		for i := range newMap.Spaces {
+			if len(newMap.Spaces[i]) != m.sizeY {
+				t.Error("Map does not have expected Y side")
+			}
+
+			for ii := range newMap.Spaces[i] {
+				if newMap.Spaces[i][ii] != nil {
+					t.Error("Map is expected to be empty")
+				}
+			}
+		}
+	}
+
+	// err := newMap.MoveUnit(unit1, unit1X, unit1Y, 3, 3)
+
+	// if err != nil {
+	// 	t.Error(err)
 	// }
 
-	newMap := NewMap("namae", 5, 5)
-	// if newMap.Name != "name" {
-	// 	t.Error("Wrong name")
+	// if newMap.GetUnitInSpace(unit1X, unit1Y) != nil {
+	// 	t.Error("Unit should have been moved")
 	// }
 
-	unit1X := 1
-	unit1Y := 1
+}
 
+func TestSpawnUnit(t *testing.T) {
+	unit1X := 3
+	unit1Y := 3
 	unit1 := &Unit{Name: "Soldier"}
 
-	newMap.SpawnUnit(unit1, unit1X, unit1Y)
+	unit2X := 3
+	unit2Y := 3
+	unit2 := &Unit{Name: "Rebel"}
 
-	unitInMap := newMap.GetUnitInSpace(unit1X, unit1Y)
+	newMap := NewMap("Map1", 10, 10)
+
+	err := newMap.SpawnUnit(unit1, unit1X, unit1Y)
+
+	if err != nil {
+		t.Error("Unit should spawn successfully")
+	}
+	unitInMap := newMap.Spaces[unit1X][unit1Y]
 
 	if unitInMap == nil {
 		t.Error("Map should contain the unit")
 	}
 
-	err := newMap.MoveUnit(unit1, unit1X, unit1Y, 3, 3)
+	if unitInMap.X != unit1X {
+		t.Error("Unit should have right X space")
+	}
+
+	if unitInMap.Y != unit1Y {
+		t.Error("Unit should have right Y space")
+	}
+
+	err = newMap.SpawnUnit(unit2, unit2X, unit2Y)
+
+	if err == nil {
+		t.Error("A unit cannot spawn on an occupied space")
+	}
+
+}
+func TestMoveUnit(t *testing.T) {
+	newMap := NewMap("Map1", 10, 10)
+
+	unit1X := 3
+	unit1Y := 3
+	unit1DestX := 4
+	unit1DestY := 3
+	unit1 := &Unit{Name: "Soldier"}
+
+	unit2X := 4
+	unit2Y := 4
+	unit2 := &Unit{Name: "Rebel"}
+
+	newMap.SpawnUnit(unit1, unit1X, unit1Y)
+	newMap.SpawnUnit(unit2, unit2X, unit2Y)
+	err := newMap.MoveUnit(unit1, unit1DestX, unit1DestY)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	if newMap.GetUnitInSpace(unit1X, unit1Y) != nil {
-		t.Error("Unit should have been moved")
+	if newMap.GetUnitInSpace(unit1X, unit1Y) == unit1 {
+		t.Error("Unit should have been removed from original space")
+	}
+
+	if newMap.GetUnitInSpace(unit1DestX, unit1DestY) != unit1 {
+		t.Error("Unit should have been moved to destination space")
+	}
+
+	err = newMap.MoveUnit(unit1, unit2.X, unit2.Y)
+	if err == nil {
+		t.Error("Error should be returned signaling that the destination space is occupied by another unit")
 	}
 
 }
