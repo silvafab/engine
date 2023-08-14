@@ -6,7 +6,7 @@ type Map struct {
 	Name   string
 	SizeX  int
 	SizeY  int
-	Spaces [][]*Unit
+	Spaces [][]SpawnableEntity
 }
 
 type Space struct {
@@ -14,10 +14,10 @@ type Space struct {
 
 func NewMap(name string, sizeX, sizeY int) Map {
 
-	s := make([][]*Unit, sizeX)
+	s := make([][]SpawnableEntity, sizeX)
 
 	for i := range s {
-		s[i] = make([]*Unit, sizeY)
+		s[i] = make([]SpawnableEntity, sizeY)
 	}
 
 	return Map{
@@ -28,43 +28,47 @@ func NewMap(name string, sizeX, sizeY int) Map {
 	}
 }
 
-func (m *Map) IsSpaceOccupiedByUnit(x, y int) bool {
+func (m *Map) IsSpaceOccupied(x, y int) bool {
 	return m.Spaces[x][y] != nil
 }
 
-func (m *Map) SpawnUnit(unit *Unit, x, y int) error {
-	if m.IsSpaceOccupiedByUnit(x, y) {
+func (m *Map) SpawnUnit(unit SpawnableEntity, x, y int) error {
+	if m.IsSpaceOccupied(x, y) {
 		return errors.New("Space occupied by another unit")
 	}
-	unit.X = x
-	unit.Y = y
+	unit.SetLocation(x, y)
 	m.Spaces[x][y] = unit
 	return nil
 }
 
-func (m *Map) GetUnitInSpace(x, y int) *Unit {
+func (m *Map) GetUnitInSpace(x, y int) SpawnableEntity {
 	return m.Spaces[x][y]
 }
 
-func (m *Map) MoveUnit(unit *Unit, destX, destY int) error {
+func (m *Map) MoveUnit(unit SpawnableEntity, destX, destY int) error {
 
 	attack := m.Spaces[destX][destY] != nil
-	move := true
+	move := unit.CanMove()
+
+	if !move {
+		return errors.New("Unit cannot move")
+	}
 
 	if attack {
-		unitInSpace := m.Spaces[destX][destY]
-		if unitInSpace != nil {
-			return errors.New("Space occupied by another unit")
-		}
+		// unitInSpace := m.Spaces[destX][destY]
+		// if unitInSpace != nil {
+
+		//TODO: IMPLEMENT ATTACK
+		return errors.New("Space occupied by another unit")
+
+		// }
 		// move, _ = m.UnitAttack(unit, unitInSpace)
 	}
 
-	if move {
-		m.Spaces[unit.X][unit.Y] = nil
-		m.Spaces[destX][destY] = unit
-		unit.X = destX
-		unit.Y = destY
-	}
+	x, y := unit.GetLocation()
+	m.Spaces[x][y] = nil
+	m.Spaces[destX][destY] = unit
+	unit.SetLocation(destX, destY)
 
 	return nil
 }

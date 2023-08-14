@@ -4,6 +4,48 @@ import "fmt"
 
 func main() {
 	fmt.Println("Hello world")
+	// a := make([]Unit, 8)
+
+	// a[2] = Unit{Name: "adssad"}
+
+	// fmt.Print(a[2])
+
+	// a[2].Name = "jjjjaaa"
+	// processBase(&a[2])
+	// fmt.Print(a[2])
+
+	unit1X := 3
+	unit1Y := 3
+	unit1 := &Unit{Name: "Soldier"}
+
+	newMap := NewMap("Map1", 10, 10)
+
+	newMap.SpawnUnit(unit1, unit1X, unit1Y)
+
+	x, y := unit1.GetLocation()
+	fmt.Println(x, y)
+	// fmt.Println(unit1)
+	// fmt.Println(&unit1)
+	fmt.Println(newMap.GetUnitInSpace(unit1X, unit1Y))
+
+	unit := newMap.GetUnitInSpace(unit1X, unit1Y)
+	// unit.SetLocation(4, 4)
+	// fmt.Println(newMap.GetUnitInSpace(unit1X, unit1Y))
+
+	newMap.MoveUnit(unit, 5, 8)
+	fmt.Println(newMap.GetUnitInSpace(unit1X, unit1Y))
+	fmt.Println(newMap.GetUnitInSpace(5, 8))
+
+}
+
+type BaseI interface{}
+
+type Concrete struct {
+	Name string
+}
+
+func processBase(u SpawnableEntity) {
+	u.SetLocation(1, 12)
 }
 
 /*

@@ -4,22 +4,22 @@ import (
 	"testing"
 )
 
-/*
-Initialize map
-	Should return a Map
-Create unit
-	Should insert a unit in the map
-		Error: unit tries to start outside boundaries
-		Error: unit tries to start in occupied space (either by unit or building)
-Create building
-	Should insert a building in the map
-		Error: building tries to start outside boundaries
-		Error: building tries to start in occupied space (either by unit or building)
-Move unit
-	Should move a unit inside the map
-		Error: unit tries to move outside boundaries
-		Error: unit tries to move to occupied space (either by unit or building)
-*/
+// /*
+// Initialize map
+// 	Should return a Map
+// Create unit
+// 	Should insert a unit in the map
+// 		Error: unit tries to start outside boundaries
+// 		Error: unit tries to start in occupied space (either by unit or building)
+// Create building
+// 	Should insert a building in the map
+// 		Error: building tries to start outside boundaries
+// 		Error: building tries to start in occupied space (either by unit or building)
+// Move unit
+// 	Should move a unit inside the map
+// 		Error: unit tries to move outside boundaries
+// 		Error: unit tries to move to occupied space (either by unit or building)
+// */
 
 func TestInitializeMap(t *testing.T) {
 
@@ -51,16 +51,6 @@ func TestInitializeMap(t *testing.T) {
 		}
 	}
 
-	// err := newMap.MoveUnit(unit1, unit1X, unit1Y, 3, 3)
-
-	// if err != nil {
-	// 	t.Error(err)
-	// }
-
-	// if newMap.GetUnitInSpace(unit1X, unit1Y) != nil {
-	// 	t.Error("Unit should have been moved")
-	// }
-
 }
 
 func TestSpawnUnit(t *testing.T) {
@@ -71,7 +61,6 @@ func TestSpawnUnit(t *testing.T) {
 	unit2X := 3
 	unit2Y := 3
 	unit2 := &Unit{Name: "Rebel"}
-
 	newMap := NewMap("Map1", 10, 10)
 
 	err := newMap.SpawnUnit(unit1, unit1X, unit1Y)
@@ -85,11 +74,12 @@ func TestSpawnUnit(t *testing.T) {
 		t.Error("Map should contain the unit")
 	}
 
-	if unitInMap.X != unit1X {
+	unitInMapX, unitInMapY := unitInMap.GetLocation()
+	if unitInMapX != unit1X {
 		t.Error("Unit should have right X space")
 	}
 
-	if unitInMap.Y != unit1Y {
+	if unitInMapY != unit1Y {
 		t.Error("Unit should have right Y space")
 	}
 
@@ -100,6 +90,7 @@ func TestSpawnUnit(t *testing.T) {
 	}
 
 }
+
 func TestMoveUnit(t *testing.T) {
 	newMap := NewMap("Map1", 10, 10)
 
@@ -113,8 +104,15 @@ func TestMoveUnit(t *testing.T) {
 	unit2Y := 4
 	unit2 := &Unit{Name: "Rebel"}
 
-	newMap.SpawnUnit(unit1, unit1X, unit1Y)
 	newMap.SpawnUnit(unit2, unit2X, unit2Y)
+
+	buildingX := 2
+	buildingY := 2
+	buildingDestX := 8
+	buildingDestY := 8
+	building := &Building{Name: "Barracks"}
+	newMap.SpawnUnit(building, buildingX, buildingY)
+
 	err := newMap.MoveUnit(unit1, unit1DestX, unit1DestY)
 
 	if err != nil {
@@ -132,6 +130,16 @@ func TestMoveUnit(t *testing.T) {
 	err = newMap.MoveUnit(unit1, unit2.X, unit2.Y)
 	if err == nil {
 		t.Error("Error should be returned signaling that the destination space is occupied by another unit")
+	}
+
+	err = newMap.MoveUnit(unit1, building.X, building.Y)
+	if err == nil {
+		t.Error("Error should be returned signaling that the destination space is occupied by another unit/building")
+	}
+
+	err = newMap.MoveUnit(building, buildingDestX, buildingDestY)
+	if err == nil {
+		t.Error("Building can't move")
 	}
 
 }
