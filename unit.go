@@ -16,6 +16,7 @@ type Unit struct {
 	Name    string
 	Attack  int
 	Defense int
+	Player  Player
 	Coordinates
 }
 
@@ -34,7 +35,8 @@ func (u Unit) CanMove() bool {
 }
 
 type Building struct {
-	Name string
+	Name   string
+	Player Player
 	Coordinates
 }
 

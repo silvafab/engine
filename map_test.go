@@ -54,13 +54,16 @@ func TestInitializeMap(t *testing.T) {
 }
 
 func TestSpawnUnit(t *testing.T) {
+
+	p1 := Player{Name: "Player 1"}
+
 	unit1X := 3
 	unit1Y := 3
-	unit1 := &Unit{Name: "Soldier"}
+	unit1 := &Unit{Name: "Soldier", Player: p1}
 
 	unit2X := 3
 	unit2Y := 3
-	unit2 := &Unit{Name: "Rebel"}
+	unit2 := &Unit{Name: "Rebel", Player: p1}
 	newMap := NewMap("Map1", 10, 10)
 
 	err := newMap.SpawnUnit(unit1, unit1X, unit1Y)
@@ -91,7 +94,7 @@ func TestSpawnUnit(t *testing.T) {
 
 }
 
-func TestMoveUnit(t *testing.T) {
+func TestMoveSpawnableEntity(t *testing.T) {
 	newMap := NewMap("Map1", 10, 10)
 
 	unit1X := 3
