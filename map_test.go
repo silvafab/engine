@@ -134,3 +134,32 @@ func TestMoveSpawnable(t *testing.T) {
 	}
 
 }
+
+func TestSpawnUnitFromBuilding(t *testing.T) {
+
+	p1 := Player{Name: "Player 1"}
+	players := []Player{p1}
+
+	buildingX := 2
+	buildingY := 2
+	building := &Building{Name: "Barracks"}
+
+	unit1X := 3
+	unit1Y := 3
+	unit1 := &Unit{Name: "Soldier", Player: p1}
+
+	newMap := NewMap("Map1", 10, 10, players)
+	newMap.SpawnUnit(building, buildingX, buildingY)
+
+	err := newMap.SpawnUnitFromBuilding(building, unit1, unit1X, unit1Y)
+
+	if err != nil {
+		t.Error("Building should be able to spawn unit")
+	}
+
+	err = newMap.SpawnUnitFromBuilding(building, unit1, buildingX, buildingY)
+
+	if err == nil {
+		t.Error("Unit should not be able to spawn in occupied space")
+	}
+}

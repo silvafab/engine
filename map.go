@@ -43,6 +43,17 @@ func (m *Map) SpawnUnit(unit Spawnable, x, y int) error {
 	return nil
 }
 
+func (m *Map) SpawnUnitFromBuilding(building Spawner, unit Spawnable, x, y int) error {
+
+	if !building.CanSpawn() {
+		return errors.New("Building cannot spawn unit")
+	}
+
+	err := m.SpawnUnit(unit, x, y)
+
+	return err
+}
+
 func (m *Map) GetUnitInSpace(x, y int) Spawnable {
 	return m.Spaces[x][y]
 }
