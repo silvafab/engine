@@ -17,8 +17,10 @@ func main() {
 	unit1X := 3
 	unit1Y := 3
 	unit1 := &Unit{Name: "Soldier"}
+	p1 := Player{Name: "Player 1"}
+	players := []Player{p1}
 
-	newMap := NewMap("Map1", 10, 10)
+	newMap := NewMap("Map1", 10, 10, players)
 
 	newMap.SpawnUnit(unit1, unit1X, unit1Y)
 
@@ -44,7 +46,7 @@ type Concrete struct {
 	Name string
 }
 
-func processBase(u SpawnableEntity) {
+func processBase(u Spawnable) {
 	u.SetLocation(1, 12)
 }
 

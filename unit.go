@@ -6,7 +6,7 @@ type Coordinates struct {
 }
 
 type ControllableEntity interface{}
-type SpawnableEntity interface {
+type Spawnable interface {
 	SetLocation(x, y int)
 	GetLocation() (int, int)
 	CanMove() bool

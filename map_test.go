@@ -4,23 +4,6 @@ import (
 	"testing"
 )
 
-// /*
-// Initialize map
-// 	Should return a Map
-// Create unit
-// 	Should insert a unit in the map
-// 		Error: unit tries to start outside boundaries
-// 		Error: unit tries to start in occupied space (either by unit or building)
-// Create building
-// 	Should insert a building in the map
-// 		Error: building tries to start outside boundaries
-// 		Error: building tries to start in occupied space (either by unit or building)
-// Move unit
-// 	Should move a unit inside the map
-// 		Error: unit tries to move outside boundaries
-// 		Error: unit tries to move to occupied space (either by unit or building)
-// */
-
 func TestInitializeMap(t *testing.T) {
 
 	var testCases = []struct {
@@ -31,8 +14,11 @@ func TestInitializeMap(t *testing.T) {
 		{"EmptyMap", 5, 6},
 	}
 
+	p1 := Player{Name: "Player 1"}
+	players := []Player{p1}
+
 	for _, m := range testCases {
-		newMap := NewMap(m.name, m.sizeX, m.sizeY)
+		newMap := NewMap(m.name, m.sizeX, m.sizeY, players)
 
 		if len(newMap.Spaces) != m.sizeX {
 			t.Error("Map does not have expected X side")
@@ -50,12 +36,12 @@ func TestInitializeMap(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestSpawnUnit(t *testing.T) {
 
 	p1 := Player{Name: "Player 1"}
+	players := []Player{p1}
 
 	unit1X := 3
 	unit1Y := 3
@@ -64,7 +50,7 @@ func TestSpawnUnit(t *testing.T) {
 	unit2X := 3
 	unit2Y := 3
 	unit2 := &Unit{Name: "Rebel", Player: p1}
-	newMap := NewMap("Map1", 10, 10)
+	newMap := NewMap("Map1", 10, 10, players)
 
 	err := newMap.SpawnUnit(unit1, unit1X, unit1Y)
 
@@ -94,8 +80,10 @@ func TestSpawnUnit(t *testing.T) {
 
 }
 
-func TestMoveSpawnableEntity(t *testing.T) {
-	newMap := NewMap("Map1", 10, 10)
+func TestMoveSpawnable(t *testing.T) {
+	p1 := Player{Name: "Player 1"}
+	players := []Player{p1}
+	newMap := NewMap("Map1", 10, 10, players)
 
 	unit1X := 3
 	unit1Y := 3
